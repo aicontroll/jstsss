@@ -244,3 +244,5 @@ It tells elements how to enter the stage. "Don't just appear! Slide in from the 
     ```
 4.  **Open browser**:
     Navigate to `http://localhost:5173` (or the port shown in terminal).
+#   j s t s s s  
+ 
