@@ -1,0 +1,31 @@
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Custom selection color for better aesthetics */
+::selection {
+  background-color: #10b981; /* emerald-500 */
+  color: white;
+}
+
+/* Utility to hide scrollbar but keep functionality if needed */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Subtle pattern overlay if desired */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, #f0fdf4 1px, transparent 1px),
+    linear-gradient(to bottom, #f0fdf4 1px, transparent 1px);
+  background-size: 24px 24px;
+}
