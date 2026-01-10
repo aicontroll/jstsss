@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollProgress from './components/ui/ScrollProgress';
 import AnimatedRoutes from './components/AnimatedRoutes';
+import ChatWidget from './components/ChatWidget';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -27,6 +28,7 @@ const App: React.FC = () => {
             <AnimatedRoutes />
           </main>
           <Footer />
+          <ChatWidget />
         </div>
       </Router>
     </LanguageProvider>
