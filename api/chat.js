@@ -1,0 +1,53 @@
+import OpenAI from 'openai';
+
+// Initialize OpenAI client
+// Note: In Vercel, this runs in a Node.js environment, so process.env is available
+const openai = new OpenAI({
+    apiKey: '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',
+    baseURL: 'https://integrate.api.nvidia.com/v1',
+});
+
+export default async function handler(req, res) {
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const { message } = req.body;
+
+    if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+    }
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "deepseek-ai/deepseek-v3.1-terminus",
+            messages: [
+                { role: "system", content: "You are DeepSeek, an AI assistant created by DeepSeek Company. You were integrated by dev. \"thakur utsav\" working for JATASHANKAR THAKUR SMARITI SEVA SANSTHAN. Your introduction should be: \"Hi there! I'm DeepSeek, an AI assistant created by DeepSeek Company. integrated by dev. \"thakur utsav\" working for JATASHANKAR THAKUR SMARITI SEVA SANSTHAN\"" },
+                { role: "user", content: message }
+            ],
+            temperature: 0.2,
+            top_p: 0.7,
+            max_tokens: 1024,
+            stream: true
+        });
+
+        // Set headers for Server-Sent Events (SSE)
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Connection', 'keep-alive');
+
+        for await (const chunk of completion) {
+            const content = chunk.choices[0]?.delta?.content || '';
+            if (content) {
+                res.write(`data: ${JSON.stringify({ content })}\n\n`);
+            }
+        }
+
+        res.write('data: [DONE]\n\n');
+        res.end();
+    } catch (error) {
+        console.error("Error calling AI service:", error);
+        res.status(500).json({ error: 'Failed to process request' });
+    }
+}
