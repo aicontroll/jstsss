@@ -1,15 +1,45 @@
 import express from 'express';
 import cors from 'cors';
 import OpenAI from 'openai';
+import { createClient } from '@supabase/supabase-js';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Initialize Supabase Client (Server Side)
+const supabaseUrl = 'https://slwpmeqriofusghuvkvq.supabase.co';
+const supabaseKey = 'sb_publishable_g--5NEeAFMdNbcNa0RBjyQ_c3WPRc7g';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 // In a real production app, you should move this to an environment variable (.env)
 const openai = new OpenAI({
     apiKey: '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',
     baseURL: 'https://integrate.api.nvidia.com/v1',
+});
+
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
+
+        if (error) {
+            return res.status(401).json({ error: error.message });
+        }
+
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error('Login error:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.post('/api/chat', async (req, res) => {
